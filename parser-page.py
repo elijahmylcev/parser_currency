@@ -41,9 +41,18 @@ with open('index.html', 'r', encoding="utf-8") as file:
 
 soup = BeautifulSoup(src, 'lxml')
 
-el = soup.find_all('span', {'title': 'RUB - покупка'})
+elements = soup.find_all('span', {'title': 'RUB - покупка'})
 
-print(el)
+result_values = []
+
+for el in elements:
+  result_values.append(float(el.text))
+
+print(result_values)
+
+maximum = max(result_values)
+
+print(maximum)
 
 
 
