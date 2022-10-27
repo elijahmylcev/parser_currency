@@ -15,7 +15,7 @@ def get_data_with_selenium(page_url):
       options=options
     )
     driver.get(url=page_url)
-    sleep(10)
+    sleep(5)
 
     with open('index.html', 'w', encoding="utf-8") as file:
       file.write(driver.page_source)
@@ -28,25 +28,38 @@ def get_data_with_selenium(page_url):
 
 
 # def main():
-get_data_with_selenium(page_url=page)
+# get_data_with_selenium(page_url=page)
 
 with open('index.html', 'r', encoding="utf-8") as file:
   src = file.read()
 
 soup = BeautifulSoup(src, 'lxml')
 
-elements = soup.find_all('span', {'title': 'RUB - покупка'})
+punkt_open_list = soup.find_all('tr', class_='punkt-open')
 
-result_values = []
+objects = []
+for el in punkt_open_list:
+  name = el.find('a', class_='tab').text
+  addres = el.find('address').text
+  time_update = el.find('div', class_='relativeTime').text
+  rate = float(el.find('span', {'title': 'RUB - покупка'}).text)
+  phone = el.find('a', class_='phone').text
+  el_object = {
+    'name': name,
+    'address': addres,
+    'time_update': time_update,
+    'rate': rate,
+    'phone': phone,
+  }
 
-for el in elements:
-  result_values.append(float(el.text))
+  objects.append(el_object)
 
-print(result_values)
 
-maximum = max(result_values)
+print(objects[0])
 
-print(maximum)
+# maximum = max(result_values)
+
+# print(maximum)
 
 
 # if __name__ == '__main__':
