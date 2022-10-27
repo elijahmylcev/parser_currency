@@ -1,17 +1,20 @@
 from time import sleep
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from config import page, user_agent
+from selenium.webdriver.chrome.service import Service
+from config import page, user_agent, driver_path
 from selenium import webdriver
 
 
-def get_data_with_selenium(page_url):
+def get_data_with_selenium(page_url, d_path):
   options = webdriver.ChromeOptions()
 
   try:
     driver = webdriver.Chrome(
-      executable_path='chromedriver.exe',
+      service=Service(d_path),
+      # executable_path=driver_path,
       options=options
     )
     driver.get(url=page_url)
@@ -20,15 +23,14 @@ def get_data_with_selenium(page_url):
     with open('index.html', 'w', encoding="utf-8") as file:
       file.write(driver.page_source)
 
-  except Exception as ex:
-    print(ex)
-  finally:
     driver.close()
     driver.quit()
 
+  except Exception as ex:
+    print(ex)
 
-# def main():
-# get_data_with_selenium(page_url=page)
+
+get_data_with_selenium(page_url=page, d_path=driver_path)
 
 with open('index.html', 'r', encoding="utf-8") as file:
   src = file.read()
@@ -54,12 +56,14 @@ for el in punkt_open_list:
 
   objects.append(el_object)
 
+df = pd.DataFrame(objects)
 
-print(objects[0])
+max_rate = max(df['rate'])
 
-# maximum = max(result_values)
+df_max = df[df['rate'] == max_rate]
 
-# print(maximum)
+with open('max_rate.txt', 'w', encoding='utf-8') as file:
+  file.write(df_max.to_string())
 
 
 # if __name__ == '__main__':
