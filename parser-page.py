@@ -1,10 +1,10 @@
+from datetime import datetime
 from time import sleep
 
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.service import Service
-from config import page, user_agent, driver_path
+from config import page, driver_path
 from selenium import webdriver
 
 
@@ -61,9 +61,16 @@ df = pd.DataFrame(objects)
 max_rate = max(df['rate'])
 
 df_max = df[df['rate'] == max_rate]
+mean = df['rate'].mean()
+
+print(mean)
+
+# df_max.to_string('file.txt')
 
 with open('max_rate.txt', 'w', encoding='utf-8') as file:
-  file.write(df_max.to_string())
+  file.write(
+    f'Отчет составлен: {datetime.now()} \nСредний курс: {round(mean, 2)}\n\n{df_max.to_string()}'
+  )
 
 
 # if __name__ == '__main__':
