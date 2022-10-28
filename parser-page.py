@@ -41,20 +41,21 @@ punkt_open_list = soup.find_all('tr', class_='punkt-open')
 
 objects = []
 for el in punkt_open_list:
-  name = el.find('a', class_='tab').text
-  addres = el.find('address').text
-  time_update = el.find('div', class_='relativeTime').text
-  rate = float(el.find('span', {'title': 'RUB - покупка'}).text)
-  phone = el.find('a', class_='phone').text
-  el_object = {
-    'name': name,
-    'address': addres,
-    'time_update': time_update,
-    'rate': rate,
-    'phone': phone,
-  }
+  if el.find('span', class_='kurs-warning') == None:
+    name = el.find('a', class_='tab').text
+    addres = el.find('address').text
+    time_update = el.find('div', class_='relativeTime').text
+    rate = float(el.find('span', {'title': 'RUB - покупка'}).text)
+    phone = el.find('a', class_='phone').text
+    el_object = {
+      'name': name,
+      'address': addres,
+      'time_update': time_update,
+      'rate': rate,
+      'phone': phone,
+    }
 
-  objects.append(el_object)
+    objects.append(el_object)
 
 df = pd.DataFrame(objects)
 
@@ -65,7 +66,6 @@ mean = df['rate'].mean()
 
 print(mean)
 
-# df_max.to_string('file.txt')
 
 with open('max_rate.txt', 'w', encoding='utf-8') as file:
   file.write(
